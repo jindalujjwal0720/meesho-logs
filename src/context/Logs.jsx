@@ -135,7 +135,16 @@ const LogsProvider = ({ children }) => {
   const handleDownload = () => {
     const url = downloadURLRef.current.value;
     if (isValidURL) {
-      window.open(url, "_blank");
+      const decodedURL = decodeURI(url);
+      const files = decodedURL.split("files=")[1].split(",");
+      files.forEach((file) => {
+        const a = document.createElement("a");
+        a.href = `http://localhost:3001/download?cluster=${clusterRef.current.value}&app=${appRef.current.value}&date=${dateRef.current.value}&time=${timeRef.current.value}&pod=${podRef.current.value}&files=${file}`;
+        a.download = file;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
     }
   };
 
